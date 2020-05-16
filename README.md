@@ -5,6 +5,7 @@ A Yarn wrapper with extra functionality
 ## Features
 
 - Automatically add and remove TypeScript `@types` packages when adding or removing packages in a TypeScript project
+- List linked and linkable packages, unlink all packages and automatically rerun Yarn after unlinking packages.
 
 ## Usage
 
@@ -49,6 +50,18 @@ If you run this command in a TypeScript project `yargs` will be installed as a d
 `blarn remove yargs`
 
 If you run this command in a TypeScript project and `@types/yargs` exists in `package.json` both `yargs` and `@types/yargs` will be removed. If you run this command in a JavaScript project only `yargs` will be removed.
+
+### Showing linked packages in a project
+
+`blarn linked`
+
+### Showing all packages available to be linked
+
+`blarn linkable`
+
+### Unlinking all linked packages in a project
+
+`blarn unlink-all`
 
 ## Contributing
 
