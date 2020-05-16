@@ -1,67 +1,26 @@
-import fs from 'fs';
-import path from 'path';
 import chalk from 'chalk';
-import execa from 'execa';
-import pacote from 'pacote';
-import findPackageJson from 'find-package-json';
 import updateNotifier from 'update-notifier';
 
-interface PackageJson {
-  name: string;
-  version: string;
-  devDependencies?: {
-    [key: string]: string;
-  };
-}
+import { getPackageJson, PackageJson } from './lib/package';
+import { printVersion, isYarn1, runYarn } from './lib/yarn';
+import { isTypeScriptProject } from './lib/typescript';
 
-const getPackageJson = (startDirectory: string): PackageJson => {
-  const finder = findPackageJson(startDirectory);
-  const results = finder.next();
-
-  if (results.filename) {
-    return { name: '', version: '1.0.0', ...results.value };
-  } else {
-    throw new Error('Unable to find package.json');
-  }
-};
-
-const printVersion = async (): Promise<void> => {
-  const packageJson = getPackageJson(__dirname);
-  const { stdout: yarnVersion } = await execa('yarn', ['--version']);
-
-  console.log(`Blarn version: ${packageJson.version}`);
-  console.log(`Yarn version: ${yarnVersion}`);
-};
-
-const isYarn1 = async (): Promise<boolean> => {
-  const { stdout } = await execa('yarn', ['--version']);
-
-  return stdout.startsWith('1.');
-};
-
-const isTypeScriptProject = (packageJson: PackageJson): boolean => {
-  if (
-    packageJson.devDependencies &&
-    Object.keys(packageJson.devDependencies).includes('typescript')
-  ) {
-    return true;
-  } else {
-    return fs.existsSync(path.join(process.cwd(), 'tsconfig.json'));
-  }
-};
-
-const runYarn = async (...args: string[]): Promise<void> => {
-  try {
-    await execa('yarn', args, { stdio: 'inherit' });
-  } catch (error) {
-    process.exit(error.exitCode);
-  }
-};
+import { add } from './commands/add';
+import { linkable } from './commands/linkable';
+import { linked } from './commands/linked';
+import { remove } from './commands/remove';
+import { unlink } from './commands/unlink';
+import { unlinkAll } from './commands/unlink-all';
 
 const app = async (): Promise<void> => {
+  const command = process.argv[2];
+  const args = process.argv.slice(3);
+
+  let packageJson: PackageJson;
+
   updateNotifier({ pkg: getPackageJson(__dirname) }).notify();
 
-  if (process.argv[2] === '--version' || process.argv[2] === '-v') {
+  if (command === '--version' || command === '-v') {
     await printVersion();
 
     return;
@@ -73,66 +32,42 @@ const app = async (): Promise<void> => {
     return;
   }
 
-  const packageJson = getPackageJson(process.cwd());
+  if (command === 'linkable') {
+    await linkable();
 
-  if (process.argv[2] === 'remove' && isTypeScriptProject(packageJson)) {
-    const typePackages = [];
+    return;
+  }
 
-    if (packageJson.devDependencies) {
-      for (const pkg of process.argv.slice(3)) {
-        if (!pkg.startsWith('-') && !pkg.startsWith('--') && !pkg.startsWith('@types')) {
-          let typePackage = `@types/${pkg}`;
+  try {
+    packageJson = getPackageJson(process.cwd());
+  } catch (error) {
+    console.error(`${chalk.red('error')} not a node package`);
 
-          if (pkg.startsWith('@')) {
-            const [org, packageName] = pkg.slice(1).split('/');
+    return;
+  }
 
-            typePackage = `@types/${org}__${packageName}`;
-          }
+  if (command === 'remove' && isTypeScriptProject(packageJson)) {
+    await remove(packageJson, args);
 
-          if (Object.keys(packageJson.devDependencies).includes(typePackage)) {
-            typePackages.push(typePackage);
-          }
-        }
-      }
-    }
+    return;
+  } else if (command === 'linked') {
+    await linked();
 
-    await runYarn('remove', ...process.argv.slice(3), ...typePackages);
+    return;
+  } else if (command === 'unlink') {
+    await unlink(args);
+
+    return;
+  } else if (command === 'unlink-all') {
+    await unlinkAll();
 
     return;
   }
 
   await runYarn(...process.argv.slice(2));
 
-  if (process.argv[2] === 'add' && isTypeScriptProject(packageJson)) {
-    const typePackages = [];
-
-    for (const pkg of process.argv.slice(3)) {
-      if (!pkg.startsWith('-') && !pkg.startsWith('--') && !pkg.startsWith('@types')) {
-        let typePackage = `@types/${pkg}`;
-
-        if (pkg.startsWith('@')) {
-          const [org, packageName] = pkg.slice(1).split('/');
-
-          typePackage = `@types/${org}__${packageName}`;
-        }
-
-        try {
-          await pacote.manifest(typePackage);
-
-          typePackages.push(typePackage);
-        } catch (error) {
-          if (error.code !== 'E404') {
-            console.error(`Error finding package: ${typePackage}`);
-          }
-        }
-      }
-    }
-
-    if (typePackages.length > 0) {
-      console.log(`\n${chalk.blue('info')} Installing types: ${typePackages.join(' ')}`);
-
-      await runYarn('add', '--dev', ...typePackages);
-    }
+  if (command === 'add' && isTypeScriptProject(packageJson)) {
+    await add(args);
   }
 };
 
