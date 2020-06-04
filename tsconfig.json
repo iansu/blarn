@@ -3,6 +3,7 @@
     "strict": true,
     "module": "commonjs",
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "target": "es6",
