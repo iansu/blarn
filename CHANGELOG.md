@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.3 (October 31, 2021)
+
+Fixed a bug that caused types packages to be installed on at a time
+
 ## 1.1.2 (October 31, 2021)
 
 Update dependencies
