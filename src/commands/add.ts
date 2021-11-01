@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import chalk from 'chalk';
 import pacote from 'pacote';
 
@@ -17,13 +19,24 @@ const add = async (packages: string[]): Promise<void> => {
       }
 
       try {
-        await pacote.manifest(typePackage);
+        const packageJsonPath = require.resolve(path.join(pkg, 'package.json'));
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
-        typePackages.push(typePackage);
-      } catch (error) {
-        if (error.code !== 'E404') {
-          console.error(`Error finding package: ${typePackage}`);
+        if (!packageJson.types) {
+          try {
+            await pacote.manifest(typePackage);
+
+            typePackages.push(typePackage);
+          } catch (error) {
+            if (error.code !== 'E404') {
+              console.error(`Error finding package: ${typePackage}`);
+            }
+          }
+        } else {
+          console.log('package already includes types');
         }
+      } catch (error) {
+        console.error(`${chalk.red('error')} unable to read package.json: error.message`);
       }
     }
   }

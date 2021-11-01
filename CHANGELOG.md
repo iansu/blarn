@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.2.0 (October 31, 2021)
+
+Only try to install types packages if the package doesn't include its own types
+
 ## 1.1.3 (October 31, 2021)
 
 Fixed a bug that caused types packages to be installed on at a time
