@@ -1,6 +1,6 @@
 # Blarn
 
-A Yarn wrapper with extra functionality
+A package manager wrapper with extra functionality. Currently supports npm and Yarn v1.
 
 ## Features
 
@@ -11,7 +11,7 @@ A Yarn wrapper with extra functionality
 
 ### Requirements
 
-- You must have Yarn 1 installed and available on your path
+- You must have npm or Yarn 1 installed and available on your path
 
 ### Installation
 
@@ -35,7 +35,7 @@ yarn global upgrade blarn --latest
 
 ### Running Yarn commands
 
-Blarn will pass all commands and arguments through to Yarn. When adding packages in a TypeScript project it will execute a second `yarn add` command to add any available `@types` packages as dev dependencies. When removing packages any corresponding `@types` packages will be added to the list of packages to remove.
+Blarn will pass all commands and arguments through to the package manager. When adding packages in a TypeScript project it will execute a second command to add any available `@types` packages as dev dependencies. When removing packages any corresponding `@types` packages will be added to the list of packages to remove.
 
 ### Examples
 
@@ -68,9 +68,9 @@ If you run this command in a TypeScript project and `@types/yargs` exists in `pa
 ### Running locally
 
 1. Fork and clone this repo
-1. Run `yarn`
-1. Run `yarn build` or `yarn watch`
-1. Run `yarn start` or `bin/blarn.js`
+1. Run `npm install`
+1. Run `npm run build` or `npm run watch`
+1. Run `npm start` or `bin/blarn.js`
 
 ## Acknowledgements
 
