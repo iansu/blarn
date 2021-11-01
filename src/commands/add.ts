@@ -26,12 +26,12 @@ const add = async (packages: string[]): Promise<void> => {
         }
       }
     }
+  }
 
-    if (typePackages.length > 0) {
-      console.log(`\n${chalk.blue('info')} Installing types: ${typePackages.join(' ')}`);
+  if (typePackages.length > 0) {
+    console.log(`\n${chalk.blue('info')} Installing types: ${typePackages.join(' ')}`);
 
-      await runYarn('add', '--dev', ...typePackages);
-    }
+    await runYarn('add', '--dev', ...typePackages);
   }
 };
 
