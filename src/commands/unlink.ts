@@ -1,8 +1,8 @@
-import { runYarn } from '../lib/yarn';
+import { runPackageManager } from '../lib/package-manager';
 
 const unlink = async (args: string[]): Promise<void> => {
-  await runYarn('unlink', ...args);
-  await runYarn('--force');
+  await runPackageManager(['unlink', ...args]);
+  await runPackageManager(['install --force'], ['--force']);
 };
 
 export { unlink };

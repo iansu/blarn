@@ -1,18 +1,15 @@
 {
+  "extends": "@tsconfig/node12/tsconfig.json",
   "compilerOptions": {
     "strict": true,
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
     "useUnknownInCatchVariables": false,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "target": "es2019",
-    "lib": ["es2019", "es2020.bigint", "es2020.string", "es2020.symbol.wellknown"],
     "moduleResolution": "node",
     "sourceMap": false,
     "declaration": false,
     "outDir": "build",
+    "typeRoots": ["node_modules/@types", "src/types"],
     "baseUrl": ".",
     "paths": {
       "*": ["*", "node_modules/*", "src/*"]

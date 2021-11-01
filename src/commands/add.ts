@@ -3,7 +3,7 @@ import path from 'path';
 import chalk from 'chalk';
 import pacote from 'pacote';
 
-import { runYarn } from '../lib/yarn';
+import { runPackageManager } from '../lib/package-manager';
 
 const add = async (packages: string[]): Promise<void> => {
   const typePackages = [];
@@ -44,7 +44,7 @@ const add = async (packages: string[]): Promise<void> => {
   if (typePackages.length > 0) {
     console.log(`\n${chalk.blue('info')} Installing types: ${typePackages.join(' ')}`);
 
-    await runYarn('add', '--dev', ...typePackages);
+    await runPackageManager(['install', '-D', ...typePackages], ['add', '--dev', ...typePackages]);
   }
 };
 

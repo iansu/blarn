@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.3.0 (November 3, 2021)
+
+Add support for npm
+
 ## 1.2.0 (October 31, 2021)
 
 Only try to install types packages if the package doesn't include its own types
