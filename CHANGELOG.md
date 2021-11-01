@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.2 (October 31, 2021)
+
+Update dependencies
+
 ## 1.1.1 (June 3, 2020)
 
 Fix a bug in `linked` command when a symlink points to a non-existent target
