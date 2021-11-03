@@ -13,7 +13,7 @@ import { unlink } from './commands/unlink';
 import { unlinkAll } from './commands/unlink-all';
 
 const app = async (): Promise<void> => {
-  const command = process.argv[2];
+  let command = process.argv[2];
   const args = process.argv.slice(3);
 
   updateNotifier({ pkg: getPackageJson(__dirname) }).notify();
@@ -50,13 +50,13 @@ const app = async (): Promise<void> => {
     return;
   }
 
-  if (isNpm() && process.argv.slice(2).length === 0) {
-    await runPackageManager(['install']);
-  } else {
-    await runPackageManager(process.argv.slice(2));
+  if (isNpm() && command === undefined) {
+    command = 'install';
   }
 
-  if (command === 'add' && isTypeScriptProject(packageJson)) {
+  await runPackageManager([command, ...args]);
+
+  if ((command === 'add' || command === 'install') && isTypeScriptProject(packageJson)) {
     await add(args);
   }
 };

@@ -22,7 +22,7 @@ const remove = async (packageJson: PackageJson, packages: string[]): Promise<voi
     }
   }
 
-  await runPackageManager(['remove', ...process.argv.slice(3), ...typePackages]);
+  await runPackageManager(['remove', ...packages, ...typePackages]);
 };
 
 export { remove };
