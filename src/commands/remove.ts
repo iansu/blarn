@@ -1,5 +1,5 @@
 import { PackageJson } from '../lib/package';
-import { runYarn } from '../lib/yarn';
+import { runPackageManager } from '../lib/package-manager';
 
 const remove = async (packageJson: PackageJson, packages: string[]): Promise<void> => {
   const typePackages = [];
@@ -22,7 +22,7 @@ const remove = async (packageJson: PackageJson, packages: string[]): Promise<voi
     }
   }
 
-  await runYarn('remove', ...process.argv.slice(3), ...typePackages);
+  await runPackageManager(['remove', ...packages, ...typePackages]);
 };
 
 export { remove };

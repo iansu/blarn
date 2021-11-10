@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2.0.0 (November 12, 2021)
+
+Add support for npm
+
+- Allow npm commands to be run with `run`
+- Alias `add` to `install` when using npm
+- Alias `remove` to `uninstall` when using npm
+
 ## 1.2.0 (October 31, 2021)
 
 Only try to install types packages if the package doesn't include its own types

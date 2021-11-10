@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 
-import { runYarn } from '../lib/yarn';
+import { runPackageManager } from '../lib/package-manager';
 import { getSymlinks } from '../lib/symlink';
 
 const unlinkAll = async (): Promise<void> => {
@@ -14,10 +14,10 @@ const unlinkAll = async (): Promise<void> => {
 
   const symlinks = getSymlinks(searchPath);
   const linkedPackages = symlinks
-    .filter(symlink => !symlink.name.includes('.bin'))
-    .map(symlink => ({
+    .filter((symlink) => !symlink.name.includes('.bin'))
+    .map((symlink) => ({
       name: symlink.name.replace(`${searchPath}/`, ''),
-      target: symlink.target
+      target: symlink.target,
     }));
 
   if (linkedPackages.length > 0) {
@@ -29,8 +29,8 @@ const unlinkAll = async (): Promise<void> => {
       unlinkPackages.push(pkg.name);
     }
 
-    await runYarn('unlink', ...unlinkPackages);
-    await runYarn('--force');
+    await runPackageManager(['unlink', ...unlinkPackages]);
+    await runPackageManager(['install --force'], ['--force']);
   } else {
     console.log('No linked packages');
   }

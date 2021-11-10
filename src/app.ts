@@ -1,8 +1,8 @@
-import chalk from 'chalk';
 import updateNotifier from 'update-notifier';
 
-import { getPackageJson, PackageJson } from './lib/package';
-import { printVersion, isYarn1, runYarn } from './lib/yarn';
+import { getPackageJson } from './lib/package';
+import { preflightCheck, printVersion } from './lib/preflight';
+import { runPackageManager } from './lib/package-manager';
 import { isTypeScriptProject } from './lib/typescript';
 
 import { add } from './commands/add';
@@ -13,21 +13,13 @@ import { unlink } from './commands/unlink';
 import { unlinkAll } from './commands/unlink-all';
 
 const app = async (): Promise<void> => {
-  const command = process.argv[2];
+  let command = process.argv[2];
   const args = process.argv.slice(3);
-
-  let packageJson: PackageJson;
 
   updateNotifier({ pkg: getPackageJson(__dirname) }).notify();
 
   if (command === '--version' || command === '-v') {
     await printVersion();
-
-    return;
-  }
-
-  if (!(await isYarn1())) {
-    console.error(`${chalk.red('error')} blarn in not compatible with Yarn 2`);
 
     return;
   }
@@ -38,15 +30,9 @@ const app = async (): Promise<void> => {
     return;
   }
 
-  try {
-    packageJson = getPackageJson(process.cwd());
-  } catch (error) {
-    console.error(`${chalk.red('error')} not a node package`);
+  const packageJson = await preflightCheck();
 
-    return;
-  }
-
-  if (command === 'remove' && isTypeScriptProject(packageJson)) {
+  if ((command === 'remove' || command === 'uninstall') && isTypeScriptProject(packageJson)) {
     await remove(packageJson, args);
 
     return;
@@ -64,9 +50,13 @@ const app = async (): Promise<void> => {
     return;
   }
 
-  await runYarn(...process.argv.slice(2));
+  if (command === undefined) {
+    command = 'install';
+  }
 
-  if (command === 'add' && isTypeScriptProject(packageJson)) {
+  await runPackageManager([command, ...args]);
+
+  if ((command === 'add' || command === 'install') && isTypeScriptProject(packageJson)) {
     await add(args);
   }
 };
