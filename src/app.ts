@@ -2,7 +2,7 @@ import updateNotifier from 'update-notifier';
 
 import { getPackageJson } from './lib/package';
 import { preflightCheck, printVersion } from './lib/preflight';
-import { isNpm, runPackageManager } from './lib/package-manager';
+import { runPackageManager } from './lib/package-manager';
 import { isTypeScriptProject } from './lib/typescript';
 
 import { add } from './commands/add';
@@ -32,7 +32,7 @@ const app = async (): Promise<void> => {
 
   const packageJson = await preflightCheck();
 
-  if (command === 'remove' && isTypeScriptProject(packageJson)) {
+  if ((command === 'remove' || command === 'uninstall') && isTypeScriptProject(packageJson)) {
     await remove(packageJson, args);
 
     return;
@@ -50,7 +50,7 @@ const app = async (): Promise<void> => {
     return;
   }
 
-  if (isNpm() && command === undefined) {
+  if (command === undefined) {
     command = 'install';
   }
 

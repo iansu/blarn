@@ -16,7 +16,7 @@ const preflightCheck = async (): Promise<PackageJson> => {
   }
 
   if (isYarnOrNpm() === 'yarn' && !(await isYarn1())) {
-    console.error(`${chalk.red('error')} blarn in not compatible with Yarn 2`);
+    console.error(`${chalk.red('error')} Blarn in not compatible with Yarn >=2`);
 
     process.exit(1);
   }
@@ -26,10 +26,28 @@ const preflightCheck = async (): Promise<PackageJson> => {
 
 const printVersion = async (): Promise<void> => {
   const packageJson = getPackageJson(__dirname);
-  const { stdout: yarnVersion } = await execa('yarn', ['--version']);
+  let yarnVersion;
+  let npmVersion;
+
+  try {
+    const { stdout } = await execa('yarn', ['--version']);
+
+    yarnVersion = stdout;
+  } catch {
+    yarnVersion = 'unknown';
+  }
+
+  try {
+    const { stdout } = await execa('npm', ['--version']);
+
+    npmVersion = stdout;
+  } catch {
+    npmVersion = 'unknown';
+  }
 
   console.log(`Blarn version: ${packageJson.version}`);
   console.log(`Yarn version: ${yarnVersion}`);
+  console.log(`npm version: ${npmVersion}`);
 };
 
 export { preflightCheck, printVersion };

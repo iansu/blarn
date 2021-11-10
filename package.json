@@ -1,7 +1,7 @@
 {
   "name": "blarn",
   "description": "A Yarn wrapper with extra functionality",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "author": "Ian Sutherland <ian@iansutherland.ca>",
   "license": "MIT",
   "repository": {
@@ -15,7 +15,7 @@
     "blarn": "bin/blarn.js"
   },
   "scripts": {
-    "start": "ts-node-dev --no-notify -- src/run.ts",
+    "start": "ts-node-script --no-notify -- src/run.ts",
     "start:bin": "bin/blarn.js",
     "build": "NODE_ENV=production ncc build src/app.ts -o build --minify",
     "watch": "NODE_ENV=production ncc build src/app.ts -o build --minify --watch",
@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
+    "@types/debug": "^4.1.7",
     "@types/find-package-json": "1.2.2",
     "@types/node": "16.11.6",
     "@types/pacote": "11.1.1",

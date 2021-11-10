@@ -5,7 +5,11 @@ A package manager wrapper with extra functionality. Currently supports npm and Y
 ## Features
 
 - Automatically add and remove TypeScript `@types` packages when adding or removing packages in a TypeScript project
-- List linked and linkable packages, unlink all packages and automatically rerun Yarn after unlinking packages.
+  - Ignores "placeholder" types packages that don't do anything
+- List linked and linkable packages, unlink all packages and automatically rerun install after unlinking packages
+- Automatically add `run` to npm commands
+- Support `add` as an alias to `install` for npm
+- Support `remove` as an alias to `uninstall` for npm
 
 ## Usage
 
@@ -23,6 +27,15 @@ npm install -g blarn
 yarn global add blarn
 ```
 
+### Aliases
+
+If you really want to go all in on Blarn you can alias the `yarn` and `npm` commands to `blarn`. This will allow you to run either command in a project and Blarn will automatically use the correct package manager. It also allows you to run npm commands like yarn without specifying `run`. For example you could run `npm build` instead of `npm run build`. This could be useful if you are migrating from Yarn to npm. To do this add the following aliases in your shell:
+
+```sh
+alias npm="blarn"
+alias yarn="blarn"
+```
+
 ### Upgrading
 
 ```sh
@@ -30,10 +43,10 @@ yarn global add blarn
 npm install -g blarn
 
 // yarn
-yarn global upgrade blarn --latest
+yarn global add blarn
 ```
 
-### Running Yarn commands
+### Running package manager commands
 
 Blarn will pass all commands and arguments through to the package manager. When adding packages in a TypeScript project it will execute a second command to add any available `@types` packages as dev dependencies. When removing packages any corresponding `@types` packages will be added to the list of packages to remove.
 
