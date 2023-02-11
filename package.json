@@ -46,7 +46,7 @@
     ]
   },
   "dependencies": {
-    "update-notifier": "5.1.0"
+    "update-notifier": "6.0.2"
   },
   "devDependencies": {
     "@types/find-package-json": "1.2.2",
