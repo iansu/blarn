@@ -60,7 +60,7 @@
     "execa": "5.1.1",
     "find-package-json": "1.2.0",
     "husky": "7.0.4",
-    "lint-staged": "11.2.6",
+    "lint-staged": "13.2.1",
     "pacote": "11.1.4",
     "prettier": "2.4.1",
     "rimraf": "3.0.2",
